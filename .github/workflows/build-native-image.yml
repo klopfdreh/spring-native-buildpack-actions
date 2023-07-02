@@ -1,0 +1,74 @@
+name: build-native-image
+on:
+  workflow_dispatch:
+  #push:
+  #  paths-ignore:
+  #    - "docs/**"
+  #  branches:
+  #    - main
+
+jobs:
+  build:
+    name: ${{ matrix.version }} on ${{ matrix.os }}
+    strategy:
+      matrix:
+        version: [ latest ] #, dev, '21.3.0'
+        os: [ ubuntu-latest ] #, macos-latest, windows-latest, ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Performing checkout
+        uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      # see: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-maven-dependencies
+        with:
+          path: ~/.m2/repository
+          key: ${{ matrix.os }}-maven-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ matrix.os }}-maven-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+            ${{ matrix.os }}-maven-${{ env.cache-name }}-
+            ${{ matrix.os }}-maven-
+            ${{ matrix.os }}-
+
+      #- name: Docker test run
+      #  run: docker ps
+      #  if: ${{ matrix.os == 'windows-latest' }}
+
+      # See hints for docker daemon https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#build-image.docker-daemon
+
+      # See https://github.com/github/roadmap/issues/528
+      - name: Build Native Image for macOS
+        run: mvn -DbuilderImage=dashaun/java-native-builder-arm64 -DdockerHost=unix:///var/run/docker.sock clean -am -Pnative spring-boot:build-image
+        if: ${{ matrix.os == 'macos-latest' }}
+
+      - name: Build Native Image for Windows
+
+        run: mvn -DbuilderImage=paketobuildpacks/builder:tiny -DdockerHost=tcp://0.0.0.0:2376 clean -am -Pnative spring-boot:build-image
+        if: ${{ matrix.os == 'windows-latest' }}
+
+      - name: Build Native Image for Unix
+        run: mvn -DbuilderImage=paketobuildpacks/builder:tiny -DdockerHost=unix:///var/run/docker.sock clean -am -Pnative spring-boot:build-image
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+
+      # Docker push steps
+
+      #- name: Login to Docker Hub
+      #  uses: docker/login-action@v2
+      #  with:
+      #    username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #    password: ${{ secrets.DOCKERHUB_API_KEY }}
+
+      #- name: Docker Push
+      #  run: docker push $(echo $DOCKER_IMAGE_NAME):$(echo $GITHUB_RUN_NUMBER)

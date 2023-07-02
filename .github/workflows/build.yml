@@ -1,0 +1,46 @@
+name: build
+on:
+  workflow_dispatch:
+  #push:
+  #  paths-ignore:
+  #    - "docs/**"
+  #  branches:
+  #    - main
+  #    - release/*
+  #pull_request:
+  #  types:
+  #    - opened
+  #    - synchronize
+  #    - reopened
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      # see: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-maven-dependencies
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+            ${{ runner.os }}-maven-${{ env.cache-name }}-
+            ${{ runner.os }}-maven-
+            ${{ runner.os }}-
+
+      - name: Build with Maven
+        run: mvn clean verify
