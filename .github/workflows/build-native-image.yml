@@ -54,8 +54,7 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' }}
 
       - name: Build Native Image for Windows
-
-        run: mvn -DbuilderImage=paketobuildpacks/builder:tiny -DdockerHost=unix:////var/run/docker.sock clean -am -Pnative spring-boot:build-image
+        run: mvn -DbuilderImage=paketobuildpacks/builder:tiny -DdockerHost=tcp://0.0.0.0:2375 clean -am -Pnative spring-boot:build-image
         if: ${{ matrix.os == 'windows-latest' }}
 
       - name: Build Native Image for Unix
