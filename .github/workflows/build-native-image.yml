@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         version: [ latest ] #, dev, '21.3.0'
-        os: [ ubuntu-latest ] #, macos-latest, windows-latest, ubuntu-latest
+        os: [ windows-latest ] #, macos-latest, windows-latest, ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up JDK
@@ -55,7 +55,7 @@ jobs:
 
       - name: Build Native Image for Windows
 
-        run: mvn -DbuilderImage=paketobuildpacks/builder:tiny -DdockerHost=tcp://0.0.0.0:2376 clean -am -Pnative spring-boot:build-image
+        run: mvn -DbuilderImage=paketobuildpacks/builder:tiny -DdockerHost=unix:////var/run/docker.sock clean -am -Pnative spring-boot:build-image
         if: ${{ matrix.os == 'windows-latest' }}
 
       - name: Build Native Image for Unix
