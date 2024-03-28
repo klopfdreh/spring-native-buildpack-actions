@@ -15,16 +15,15 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <!-- Dependency versions -->
-        <spring.version>3.1.1</spring.version>
-        <lombok.version>1.18.28</lombok.version>
-        <junit.jupiter.version>5.9.3</junit.jupiter.version>
-        <junit.platform.version>1.9.3</junit.platform.version>
+        <spring.version>3.2.4</spring.version>
+        <lombok.version>1.18.30</lombok.version>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+        <junit.platform.version>1.10.2</junit.platform.version>
 
         <!-- Plugins versions -->
         <native-maven-plugin.version>0.9.23</native-maven-plugin.version>
-        <maven-surefire-plugin.version>3.1.0</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.1.0</maven-failsafe-plugin.version>
-
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
     </properties>
 
     <dependencies>
