@@ -1,4 +1,4 @@
-package de.spring.nat.playground.model;
+package spring.nat.buildpack.actions.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

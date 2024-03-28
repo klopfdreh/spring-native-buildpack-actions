@@ -1,4 +1,4 @@
-package de.spring.nat.playground.model;
+package spring.nat.buildpack.actions.model;
 
 import lombok.Data;
 import lombok.ToString;

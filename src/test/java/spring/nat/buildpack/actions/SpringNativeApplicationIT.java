@@ -1,4 +1,4 @@
-package de.spring.nat.playground;
+package spring.nat.buildpack.actions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

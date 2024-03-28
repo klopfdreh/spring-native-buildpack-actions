@@ -1,4 +1,4 @@
-package de.spring.nat.playground;
+package spring.nat.buildpack.actions;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
